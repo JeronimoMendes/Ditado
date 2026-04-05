@@ -1,0 +1,11 @@
+[project]
+name = "transcripter"
+version = "0.1.0"
+description = "Interview transcription POC with speaker diarization"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.34,<1",
+    "python-multipart>=0.0.18,<1",
+    "deepgram-sdk>=3,<4",
+]
