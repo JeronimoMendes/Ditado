@@ -13,7 +13,7 @@ app = FastAPI()
 
 jobs: dict[str, dict] = {}
 
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
 
 
 def get_provider() -> TranscriptionProvider:
