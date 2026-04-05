@@ -1,0 +1,9 @@
+services:
+  app:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend:/app/frontend
+    env_file:
+      - .env
