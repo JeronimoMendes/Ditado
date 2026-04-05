@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcripter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <header>
+            <h1>Transcripter</h1>
+            <p>Transcrição de entrevistas com identificação de interlocutores</p>
+        </header>
+
+        <section id="upload-section">
+            <div id="drop-zone">
+                <p>Arraste o ficheiro de áudio ou</p>
+                <label for="file-input" class="file-label">Escolher ficheiro</label>
+                <input type="file" id="file-input" accept="audio/*" hidden>
+                <p id="file-name" class="muted"></p>
+            </div>
+            <button id="upload-btn" disabled>Transcrever</button>
+        </section>
+
+        <section id="status-section" hidden>
+            <div class="spinner"></div>
+            <p id="status-text">A processar...</p>
+        </section>
+
+        <section id="error-section" hidden>
+            <p id="error-text"></p>
+        </section>
+
+        <section id="result-section" hidden>
+            <div id="transcript"></div>
+            <button id="download-btn">Descarregar transcrição</button>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
