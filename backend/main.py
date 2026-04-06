@@ -7,7 +7,7 @@ from fastapi import BackgroundTasks, FastAPI, HTTPException, UploadFile
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
-from providers import DeepgramProvider, TranscriptResult, TranscriptionProvider
+from providers import DeepgramProvider, ElevenLabsProvider, TranscriptResult, TranscriptionProvider
 
 app = FastAPI()
 
@@ -20,6 +20,8 @@ def get_provider() -> TranscriptionProvider:
     name = os.environ.get("TRANSCRIPTION_PROVIDER", "deepgram")
     if name == "deepgram":
         return DeepgramProvider()
+    if name == "elevenlabs":
+        return ElevenLabsProvider()
     raise ValueError(f"Unknown transcription provider: {name}")
 
 
