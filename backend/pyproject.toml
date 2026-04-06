@@ -1,5 +1,5 @@
 [project]
-name = "transcripter"
+name = "ditado"
 version = "0.1.0"
 description = "Interview transcription POC with speaker diarization"
 requires-python = ">=3.12"
