@@ -1,9 +1,7 @@
 services:
   app:
-    build: ./backend
+    build: .
     expose:
       - "8000"
-    volumes:
-      - ./frontend:/app/frontend
     env_file:
       - .env
