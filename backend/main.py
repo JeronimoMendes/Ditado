@@ -16,19 +16,31 @@ jobs: dict[str, dict] = {}
 FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
 
 
-def get_provider() -> TranscriptionProvider:
-    name = os.environ.get("TRANSCRIPTION_PROVIDER", "deepgram")
-    if name == "deepgram":
-        return DeepgramProvider()
-    if name == "elevenlabs":
-        return ElevenLabsProvider()
-    raise ValueError(f"Unknown transcription provider: {name}")
+PROVIDERS: dict[str, tuple[str, type]] = {
+    "deepgram": ("Deepgram Nova-3", DeepgramProvider),
+    "elevenlabs": ("ElevenLabs Scribe v2", ElevenLabsProvider),
+}
+
+DEFAULT_PROVIDER = os.environ.get("TRANSCRIPTION_PROVIDER", "deepgram")
 
 
-provider = get_provider()
+def get_provider(name: str) -> TranscriptionProvider:
+    if name not in PROVIDERS:
+        raise ValueError(f"Unknown transcription provider: {name}")
+    return PROVIDERS[name][1]()
 
 
-async def process_transcription(job_id: str, audio_data: bytes, filename: str) -> None:
+@app.get("/api/providers")
+async def list_providers() -> dict:
+    return {
+        "default": DEFAULT_PROVIDER,
+        "providers": [
+            {"id": pid, "name": label} for pid, (label, _) in PROVIDERS.items()
+        ],
+    }
+
+
+async def process_transcription(job_id: str, audio_data: bytes, filename: str, provider: TranscriptionProvider) -> None:
     jobs[job_id]["status"] = "processing"
     try:
         result = await provider.transcribe(audio_data, filename)
@@ -40,11 +52,16 @@ async def process_transcription(job_id: str, audio_data: bytes, filename: str) -
 
 
 @app.post("/api/transcribe")
-async def transcribe(file: UploadFile, background_tasks: BackgroundTasks) -> dict:
+async def transcribe(file: UploadFile, background_tasks: BackgroundTasks, provider: str | None = None) -> dict:
+    provider_name = provider or DEFAULT_PROVIDER
+    try:
+        prov = get_provider(provider_name)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     audio_data = await file.read()
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "pending"}
-    background_tasks.add_task(process_transcription, job_id, audio_data, file.filename or "audio")
+    background_tasks.add_task(process_transcription, job_id, audio_data, file.filename or "audio", prov)
     return {"job_id": job_id}
 
 

@@ -2,6 +2,7 @@ const fileInput = document.getElementById("file-input");
 const fileName = document.getElementById("file-name");
 const uploadBtn = document.getElementById("upload-btn");
 const dropZone = document.getElementById("drop-zone");
+const providerSelect = document.getElementById("provider-select");
 const uploadSection = document.getElementById("upload-section");
 const statusSection = document.getElementById("status-section");
 const statusText = document.getElementById("status-text");
@@ -12,6 +13,25 @@ const transcript = document.getElementById("transcript");
 const downloadBtn = document.getElementById("download-btn");
 
 let selectedFile = null;
+
+(async function loadProviders() {
+    try {
+        const res = await fetch("/api/providers");
+        const data = await res.json();
+        for (const p of data.providers) {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = p.name;
+            if (p.id === data.default) opt.selected = true;
+            providerSelect.appendChild(opt);
+        }
+    } catch {
+        const opt = document.createElement("option");
+        opt.value = "deepgram";
+        opt.textContent = "Deepgram Nova-3";
+        providerSelect.appendChild(opt);
+    }
+})();
 
 fileInput.addEventListener("change", () => {
     selectedFile = fileInput.files[0] || null;
@@ -60,6 +80,7 @@ async function uploadFile() {
 
     const form = new FormData();
     form.append("file", selectedFile);
+    form.append("provider", providerSelect.value);
 
     try {
         const res = await fetch("/api/transcribe", { method: "POST", body: form });

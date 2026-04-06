@@ -77,6 +77,29 @@ header p {
     color: #999;
 }
 
+.provider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.provider-row label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.provider-row select {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #1a1a1a;
+}
+
 #upload-btn,
 #download-btn {
     display: block;
